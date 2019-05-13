@@ -50,8 +50,12 @@
                 $_SESSION["userID"] = $id;
                 $_SESSION["email"] = $email;
                 $_SESSION["isSetup"] = $isSetup;
-
-                header("location: index.php");
+                if (!$isSetup) {
+                  header("location: profile.php");
+                }
+                else {
+                  header("location: index.php");
+                }
               }
               else {
                 $password_err = "The password you entered was invalid.";

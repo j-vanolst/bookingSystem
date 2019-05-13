@@ -1,5 +1,6 @@
 <?php
   require_once "conf.php";
+
   session_start();
 
   if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
@@ -7,25 +8,7 @@
     exit;
   }
 
-  //Alter the users information after they've changed /**
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $sql = "update parent set
-    address = ?,
-    homePhone = ?,
-    school = ?,
-    email = ?,
-    doctorName = ?,
-    doctorPhone = ?,
-    medicalCenter = ?,
-    motherName = ?,
-    motherWorkplace = ?,
-    motherWorkPhone = ?,
-    motherMobile = ?,
-    fatherName = ?,
-    fatherWorkplace = ?,
-    fatherWorkPhone = ?,
-    fatherMobile = ?
-    WHERE userID = ?";
 
     $userID = $_SESSION["userID"];
 
@@ -46,21 +29,91 @@
     $fatherWorkPhone = trim($_POST["fatherWorkPhone"]);
     $fatherMobile = trim($_POST["fatherMobile"]);
 
-    if ($stmt = mysqli_prepare($link, $sql)) {
-      mysqli_stmt_bind_param($stmt, "sssssssssssssssi", $address, $homePhone, $school, $email, $doctorName, $doctorPhone, $medicalCenter, $motherName, $motherWorkplace, $motherWorkPhone, $motherMobile, $fatherName, $fatherWorkplace, $fatherWorkPhone, $fatherMobile, $userID);
-      if (mysqli_stmt_execute($stmt)) {
-        echo "Success";
+    if ($_SESSION["isSetup"]) {
+
+      $sql = "UPDATE parent SET
+        address = ?,
+        homePhone = ?,
+        school = ?,
+        email = ?,
+        doctorName = ?,
+        doctorPhone = ?,
+        medicalCenter = ?,
+        motherName = ?,
+        motherWorkplace = ?,
+        motherWorkPhone = ?,
+        motherMobile = ?,
+        fatherName = ?,
+        fatherWorkplace = ?,
+        fatherWorkPhone = ?,
+        fatherMobile = ?
+        WHERE userID = ?";
+
+      if ($stmt = mysqli_prepare($link, $sql)) {
+        mysqli_stmt_bind_param($stmt, "sssssssssssssssi", $address, $homePhone, $school, $email, $doctorName, $doctorPhone, $medicalCenter, $motherName, $motherWorkplace, $motherWorkPhone, $motherMobile, $fatherName, $fatherWorkplace, $fatherWorkPhone, $fatherMobile, $userID);
+        if (mysqli_stmt_execute($stmt)) {
+          echo "Success";
+        }
+        else {
+          echo "Execution failed";
+        }
       }
       else {
-        echo "Execution failed";
+        echo "preparing stmt failed";
       }
+      mysqli_stmt_close($stmt);
+      mysqli_close($link);
     }
     else {
-      echo "preparing stmt failed";
+      $sql = "INSERT into parent (
+        address,
+        homePhone,
+        school,
+        email,
+        doctorName,
+        doctorNumber,
+        medicalCenter,
+        motherName,
+        motherWorkplace,
+        motherWorkPhone,
+        motherMobile,
+        fatherName,
+        fatherWorkplace,
+        fatherWorkPhone,
+        fatherMobile)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        if ($stmt = mysqli_prepare($link, $sql)) {
+          mysqli_stmt_bind_param($stmt, "sssssssssssssss", $address, $homePhone, $school, $email, $doctorName, $doctorPhone, $medicalCenter, $motherName, $motherWorkplace, $motherWorkPhone, $motherMobile, $fatherName, $fatherWorkplace, $fatherWorkPhone, $fatherMobile);
+          if (mysqli_stmt_execute($stmt)) {
+            echo "Successfully setup account";
+          }
+          else {
+            echo "Something went wrong";
+          }
+        }
+        else {
+          echo "Preparing stmt failed";
+        }
+        mysqli_stmt_close($stmt);
+        $sql = "UPDATE User SET isSetup = 1 WHERE userID = ?";
+        if ($stmt = mysqli_stmt_prepare($link, $sql)) {
+          mysqli_stmt_bind_param($stmt, "i", $userID);
+          if (mysqli_stmt_execute($stmt)) {
+            echo "Successfully setup account";
+            $_SESSION["isSetup"] = true;
+          }
+          else {
+            echo "Execution failed";
+          }
+        }
+        else {
+          echo "Preparing stmt failed";
+        }
+        mysqli_stmt_close($stmt);
+        mysqli_close($link);
+        header("location: index.php");
+      }
     }
-  }
-
-
 
   function getUserInformation() {
     $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
