@@ -1,33 +1,47 @@
 <?php
   require_once "conf.php";
+
   session_start();
 
   if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
   }
-  //test script to pull the user's information from the database
-  function getUserInformation() {
-    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-    $sql = "select address, homePhone, school, email, doctorName, doctorPhone, medicalCenter,
-    motherName, motherWorkplace, motherWorkPhone, motherMobile, fatherName, fatherWorkplace, fatherWorkPhone, fatherMobile
-    from Parent where userID = ?";
-    if ($stmt = mysqli_prepare($link, $sql)) {
-      mysqli_stmt_bind_param($stmt, "i", $param_userID);
-      $param_userID = $_SESSION["userID"];
-      if (mysqli_stmt_execute($stmt)) {
-        mysqli_stmt_store_result($stmt);
-        mysqli_stmt_bind_result($stmt, $address, $homePhone, $school, $email, $doctorName, $doctorPhone,
-        $medicalCenter, $motherName, $motherWorkplace, $motherWorkPhone, $motherMobile, $fatherName, $fatherWorkplace,
-        $fatherWorkPhone, $fatherMobile);
 
-        if (mysqli_stmt_fetch($stmt)) {
-          return $email;
+  function getChildren () {
+    $children = [];
+    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    $userID = $_SESSION["userID"];
+
+    $sql = "SELECT CONCAT(firstName, ' ', lastName), birthdate, gender, allergies from Child WHERE userID = ?";
+
+    if ($stmt = mysqli_prepare($link, $sql)) {
+      mysqli_stmt_bind_param($stmt, "i", $userID);
+      if (mysqli_stmt_execute($stmt)) {
+        //echo "Success";
+        $result = mysqli_stmt_get_result($stmt);
+        //Each child is a $row with attributes row[0], row[1]...
+        while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
+          array_push($children, createCard($row[0], $row[1], $row[2]));
         }
+        return $children;
+      }
+      else {
+        //echo "Execution failed";
       }
     }
-    mysqli_stmt_close($stmt);
-    mysqli_close($link);
+    //return "<p>Hello there</p>";
+    //return $_SESSION["userID"];
+  }
+  function createCard ($name, $birthdate, $gender) {
+    return "
+    <div class='card child'>
+      <div class='card-body'>
+        <h4 class='card-title'>$name</h4>
+        <p>Birthdate: $birthdate</p>
+        <p>Gender: $gender</p>
+      </div>
+    </div>";
   }
 ?>
 <!DOCTYPE html>
@@ -72,11 +86,10 @@
       </ul>
     </nav>
     <div class="container mainWindow">
-      <h2>Welcome <?php echo($_SESSION["email"]) ?></h2>
+      <h1>Your Children</h1>
       <?php
-        echo(getUserInformation());
-        if (!$_SESSION["isSetup"]) {
-          echo("<p>You haven't entered your details yet, would you like to do that <a href='profile.php'>now?</a></p>");
+        foreach (getChildren() as $child) {
+          echo $child;
         }
       ?>
     </div>

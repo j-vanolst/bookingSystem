@@ -63,15 +63,17 @@
       }
       mysqli_stmt_close($stmt);
       mysqli_close($link);
+      header("location: index.php");
     }
     else {
       $sql = "INSERT into parent (
+        userID,
         address,
         homePhone,
         school,
         email,
         doctorName,
-        doctorNumber,
+        doctorPhone,
         medicalCenter,
         motherName,
         motherWorkplace,
@@ -81,9 +83,9 @@
         fatherWorkplace,
         fatherWorkPhone,
         fatherMobile)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         if ($stmt = mysqli_prepare($link, $sql)) {
-          mysqli_stmt_bind_param($stmt, "sssssssssssssss", $address, $homePhone, $school, $email, $doctorName, $doctorPhone, $medicalCenter, $motherName, $motherWorkplace, $motherWorkPhone, $motherMobile, $fatherName, $fatherWorkplace, $fatherWorkPhone, $fatherMobile);
+          mysqli_stmt_bind_param($stmt, "isssssssssssssss", $userID, $address, $homePhone, $school, $email, $doctorName, $doctorPhone, $medicalCenter, $motherName, $motherWorkplace, $motherWorkPhone, $motherMobile, $fatherName, $fatherWorkplace, $fatherWorkPhone, $fatherMobile);
           if (mysqli_stmt_execute($stmt)) {
             echo "Successfully setup account";
           }
@@ -95,8 +97,10 @@
           echo "Preparing stmt failed";
         }
         mysqli_stmt_close($stmt);
+
+//Updates the isSetup variable for the user once they have successfully setup their account
         $sql = "UPDATE User SET isSetup = 1 WHERE userID = ?";
-        if ($stmt = mysqli_stmt_prepare($link, $sql)) {
+        if ($stmt = mysqli_prepare($link, $sql)) {
           mysqli_stmt_bind_param($stmt, "i", $userID);
           if (mysqli_stmt_execute($stmt)) {
             echo "Successfully setup account";
@@ -170,13 +174,22 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
-      <span class="navbar-text">
-        <h1>Oscar Booking System</h1>
-      </span>
+      <a class="navbar-brand" href="index.php">Oscar Booking System</a>
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-            Account
+            My Children
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="addChild.php">Add a Child</a>
+            <a class="dropdown-item" href="children.php">View Children</a>
+          </div>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+            My Account
           </a>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="profile.php">View Profile</a>

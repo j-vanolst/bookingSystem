@@ -92,9 +92,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
-      <span class="navbar-text">
-        <h1>Oscar Booking System</h1>
-      </span>
+      <a class="navbar-brand" href="index.php">Oscar Booking System</a>
     </nav>
     <div class="container loginForm">
       <h2>Login</h2>
