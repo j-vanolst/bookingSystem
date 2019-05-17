@@ -40,13 +40,13 @@ create table if not exists Parent (
     
 create table if not exists Child (
 	childID int primary key auto_increment,
-    parentID int,
+    userID int,
 	firstName varchar(20),
     lastName varchar(20),
-    birthday date,
+    birthdate date,
     gender char(1),
     allergies varchar(100),
-    foreign key(parentID) references Parent(parentID)
+    foreign key(userID) references User(userID)
 	) engine = InnoDB;
     
 create table if not exists Booking (
