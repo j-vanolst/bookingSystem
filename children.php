@@ -40,6 +40,8 @@
         <h4 class='card-title'>$name</h4>
         <p>Birthdate: $birthdate</p>
         <p>Gender: $gender</p>
+        <button type='button' class='btn btn-primary'>Edit</button>
+        <button type='button' class='btn btn-danger'>Delete</button>
       </div>
     </div>";
   }
@@ -57,6 +59,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+    <script src="script.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
