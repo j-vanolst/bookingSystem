@@ -34,6 +34,9 @@
   function createCard ($childID, $firstName, $lastName, $birthdate, $gender, $allergies) {
     return "
     <div class='card child'>
+      <div class='card-header'>
+        <h2>Child</h2>
+      </div>
       <div class='card-body'>
         <form id='child$childID'>
           <div class='input-group mb-3'>
