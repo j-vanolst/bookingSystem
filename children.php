@@ -114,6 +114,11 @@
           </div>
         </li>
       </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="booking.php"><b>Make a Booking</b></a>
+        </li>
+      </ul>
     </nav>
     <div class="container mainWindow">
       <div id="children">

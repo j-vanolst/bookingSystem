@@ -1,34 +1,4 @@
 <?php
-  require_once "conf.php";
-  session_start();
-
-  if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("location: login.php");
-    exit;
-  }
-  //test script to pull the user's information from the database
-  function getUserInformation() {
-    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-    $sql = "select address, homePhone, school, email, doctorName, doctorPhone, medicalCenter,
-    motherName, motherWorkplace, motherWorkPhone, motherMobile, fatherName, fatherWorkplace, fatherWorkPhone, fatherMobile
-    from Parent where userID = ?";
-    if ($stmt = mysqli_prepare($link, $sql)) {
-      mysqli_stmt_bind_param($stmt, "i", $param_userID);
-      $param_userID = $_SESSION["userID"];
-      if (mysqli_stmt_execute($stmt)) {
-        mysqli_stmt_store_result($stmt);
-        mysqli_stmt_bind_result($stmt, $address, $homePhone, $school, $email, $doctorName, $doctorPhone,
-        $medicalCenter, $motherName, $motherWorkplace, $motherWorkPhone, $motherMobile, $fatherName, $fatherWorkplace,
-        $fatherWorkPhone, $fatherMobile);
-
-        if (mysqli_stmt_fetch($stmt)) {
-          return $email;
-        }
-      }
-    }
-    mysqli_stmt_close($stmt);
-    mysqli_close($link);
-  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,13 +50,5 @@
       </ul>
     </nav>
     <div class="container mainWindow">
-      <h2>Welcome <?php echo($_SESSION["email"]) ?></h2>
-      <?php
-        echo(getUserInformation());
-        if (!$_SESSION["isSetup"]) {
-          echo("<p>You haven't entered your details yet, would you like to do that <a href='profile.php'>now?</a></p>");
-        }
-      ?>
+      <h2>Booking</h2>
     </div>
-  </body>
-</html>
