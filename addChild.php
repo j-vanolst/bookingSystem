@@ -56,6 +56,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+    <!-- jQuery Resources -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- CSS Resources -->
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
@@ -96,7 +99,7 @@
         </div>
         <div class="form-group">
           <label>Birth Date</label>
-          <input type="date" name="birthdate" class="form-control" id="test">
+          <input type="date" name="birthdate" class="form-control">
         </div>
         <div class="form-group mb-3">
           <label>Gender</label>

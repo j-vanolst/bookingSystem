@@ -13,7 +13,7 @@
     $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
     $userID = $_SESSION["userID"];
 
-    $sql = "SELECT CONCAT(firstName, ' ', lastName), birthdate, gender, allergies from Child WHERE userID = ?";
+    $sql = "SELECT childID, firstName, lastName, birthdate, gender, allergies from Child WHERE userID = ?";
 
     if ($stmt = mysqli_prepare($link, $sql)) {
       mysqli_stmt_bind_param($stmt, "i", $userID);
@@ -22,7 +22,7 @@
         $result = mysqli_stmt_get_result($stmt);
         //Each child is a $row with attributes row[0], row[1]...
         while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
-          array_push($children, createCard($row[0], $row[1], $row[2]));
+          array_push($children, createCard($row[0], $row[1], $row[2], $row[3], $row[4], $row[5]));
         }
         return $children;
       }
@@ -30,18 +30,39 @@
         //echo "Execution failed";
       }
     }
-    //return "<p>Hello there</p>";
-    //return $_SESSION["userID"];
   }
-  function createCard ($name, $birthdate, $gender) {
+  function createCard ($childID, $firstName, $lastName, $birthdate, $gender, $allergies) {
     return "
     <div class='card child'>
       <div class='card-body'>
-        <h4 class='card-title'>$name</h4>
-        <p>Birthdate: $birthdate</p>
-        <p>Gender: $gender</p>
-        <button type='button' class='btn btn-primary'>Edit</button>
-        <button type='button' class='btn btn-danger'>Delete</button>
+        <form id='child$childID'>
+          <div class='input-group mb-3'>
+            <div class='input-group-prepend'>
+              <span class='input-group-text'>Name</span>
+            </div>
+            <input type='text' name='firstName' class='form-control' value='$firstName' disabled>
+            <input type='text' name='lastName' class='form-control' value='$lastName' disabled>
+          </div>
+          <div class='input-group mb-3'>
+            <div class='input-group-prepend'>
+              <span class='input-group-text'>Birthdate</span>
+            </div>
+            <input type='text' name='birthdate' class='form-control' value='$birthdate' disabled>
+          </div>
+          <div class='input-group mb-3'>
+            <div class='input-group-prepend'>
+              <span class='input-group-text'>Gender</span>
+            </div>
+            <input type='text' name='gender' class='form-control' value='$gender' disabled>
+          </div>
+          <div class='form-group'>
+            <label for='allergies'>Allergies</label>
+            <textarea class='form-control' rows='3' disabled>$allergies</textarea>
+          </div>
+        <button type='button' class='btn btn-primary' name='$childID' onclick='editChild(this.name)'>Edit</button>
+        <button type='button' class='btn btn-success hidden' name='$childID' onclick='saveChild(this.name)'>Save</button>
+        <button type='button' class='btn btn-danger' name='$childID' onclick='deleteChild(this.name)'>Delete</button>
+        </form>
       </div>
     </div>";
   }
@@ -59,8 +80,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-    <script src="script.js"></script>
+    <!-- jQuery Resources -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <!-- CSS Resources -->
     <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- Javascript Resources -->
+    <script src="script.js"></script>
   </head>
   <body>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
@@ -89,12 +116,14 @@
       </ul>
     </nav>
     <div class="container mainWindow">
-      <h1>Your Children</h1>
-      <?php
-        foreach (getChildren() as $child) {
-          echo $child;
-        }
-      ?>
+      <div id="children">
+        <h1>Your Children</h1>
+        <?php
+          foreach (getChildren() as $child) {
+            echo $child;
+          }
+          ?>
+      </div>
     </div>
   </body>
 </html>
