@@ -9,7 +9,31 @@
   }
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    /*if (isset($_POST["userID"], $_POST["address"], $_POST["homePhone"], $_POST["school"], $_POST["email"],
+    $_POST["doctorName"], $_POST["doctorPhone"], $_POST["medicalCenter"],
+    $_POST["motherName"], $_POST["motherWorkplace"], $_POST["motherWorkPhone"], $_POST["motherMobile"],
+    $_POST["fatherName"], $_POST["fatherWorkplace"], $_POST["fatherWorkPhone"], $_POST["fatherMobile"])) {
 
+      $userID = $_SESSION["userID"];
+
+      $address = trim($_POST["address"]);
+      $homePhone = trim($_POST["homePhone"]);
+      $school = trim($_POST["school"]);
+      $email = trim($_POST["email"]);
+      $doctorName = trim($_POST["doctorName"]);
+      $doctorPhone = trim($_POST["doctorPhone"]);
+      $medicalCenter = trim($_POST["medicalCenter"]);
+
+      $motherName = trim($_POST["motherName"]);
+      $motherWorkplace = trim($_POST["motherWorkplace"]);
+      $motherWorkPhone = trim($_POST["motherWorkPhone"]);
+      $motherMobile = trim($_POST["motherMobile"]);
+      $fatherName = trim($_POST["fatherName"]);
+      $fatherWorkplace = trim($_POST["fatherWorkplace"]);
+      $fatherWorkPhone = trim($_POST["fatherWorkPhone"]);
+      $fatherMobile = trim($_POST["fatherMobile"]);
+      echo "vars set";
+    }*/
     $userID = $_SESSION["userID"];
 
     $address = trim($_POST["address"]);
@@ -52,14 +76,14 @@
       if ($stmt = mysqli_prepare($link, $sql)) {
         mysqli_stmt_bind_param($stmt, "sssssssssssssssi", $address, $homePhone, $school, $email, $doctorName, $doctorPhone, $medicalCenter, $motherName, $motherWorkplace, $motherWorkPhone, $motherMobile, $fatherName, $fatherWorkplace, $fatherWorkPhone, $fatherMobile, $userID);
         if (mysqli_stmt_execute($stmt)) {
-          echo "Success";
+          //echo "Success";
         }
         else {
-          echo "Execution failed";
+          //echo "Execution failed";
         }
       }
       else {
-        echo "preparing stmt failed";
+        //echo "preparing stmt failed";
       }
       mysqli_stmt_close($stmt);
       mysqli_close($link);
@@ -87,14 +111,14 @@
         if ($stmt = mysqli_prepare($link, $sql)) {
           mysqli_stmt_bind_param($stmt, "isssssssssssssss", $userID, $address, $homePhone, $school, $email, $doctorName, $doctorPhone, $medicalCenter, $motherName, $motherWorkplace, $motherWorkPhone, $motherMobile, $fatherName, $fatherWorkplace, $fatherWorkPhone, $fatherMobile);
           if (mysqli_stmt_execute($stmt)) {
-            echo "Successfully setup account";
+            //echo "Successfully setup account";
           }
           else {
-            echo "Something went wrong";
+            //echo "Something went wrong";
           }
         }
         else {
-          echo "Preparing stmt failed";
+          //echo "Preparing stmt failed";
         }
         mysqli_stmt_close($stmt);
 
