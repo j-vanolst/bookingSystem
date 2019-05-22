@@ -29,14 +29,14 @@
       if ($stmt = mysqli_prepare($link, $sql)) {
         mysqli_stmt_bind_param($stmt, "isssss", $userID, $firstName, $lastName, $birthdate, $gender, $allergies);
         if (mysqli_stmt_execute($stmt)) {
-          echo "Sucessfully added child";
+          //echo "Sucessfully added child";
         }
         else {
-          echo "Something went wrong";
+          //echo "Something went wrong";
         }
       }
       else {
-        echo "Preparing stmt failed";
+        //echo "Preparing stmt failed";
       }
       mysqli_stmt_close($stmt);
       mysqli_close($link);
