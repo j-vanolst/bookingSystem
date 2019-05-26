@@ -127,15 +127,15 @@
         if ($stmt = mysqli_prepare($link, $sql)) {
           mysqli_stmt_bind_param($stmt, "i", $userID);
           if (mysqli_stmt_execute($stmt)) {
-            echo "Successfully setup account";
+            //echo "Successfully setup account";
             $_SESSION["isSetup"] = true;
           }
           else {
-            echo "Execution failed";
+            //echo "Execution failed";
           }
         }
         else {
-          echo "Preparing stmt failed";
+          //echo "Preparing stmt failed";
         }
         mysqli_stmt_close($stmt);
         mysqli_close($link);
@@ -229,6 +229,15 @@
           <a class="nav-link" href="booking.php"><b>Make a Booking</b></a>
         </li>
       </ul>
+      <?php
+        if ($_SESSION["isAdmin"]) {
+          echo '<ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="admin.php">Admin</a>
+                  </li>
+                </ul>';
+        }
+      ?>
     </nav>
     <div class="container mainWindow">
       <?php $userInfo = getUserInformation() ?>

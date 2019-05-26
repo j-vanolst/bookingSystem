@@ -6,10 +6,68 @@
     header("location: login.php");
     exit;
   }
-  $userID = $_SESSION["userID"];
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["childID"], $_POST["bookingDate"])) {
+
+      $userID = $_SESSION["userID"];
+      $childID = $_POST["childID"];
+      $bookingDate = $_POST["bookingDate"];
+
+      if (!checkBooking($userID, $childID, $bookingDate)) {
+        //echo "run code for creating mysql entry";
+        $sql = "INSERT INTO Booking
+        VALUES (?, ?, ?)";
+
+        if ($stmt = mysqli_prepare($link, $sql)) {
+          mysqli_stmt_bind_param($stmt, "sii", $bookingDate, $childID, $userID);
+          if (mysqli_stmt_execute($stmt)) {
+            //echo "Successfully booking child in";
+          }
+          else {
+            //echo "execution failed";
+          }
+        }
+        else {
+          //echo "preparation failed";
+        }
+        mysqli_stmt_close($stmt);
+        mysqli_close($link);
+        header("location: booking.php");
+      }
+      else {
+        //echo "dont run code for creating mysql entry";
+      }
+    }
+  }
   //Checks to see if a child has already been booked in
-  function checkBooking() {
-    return true;
+  function checkBooking($userID, $childID, $bookingDate) {
+    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+    $sql = "SELECT childID FROM Booking
+    WHERE bookingDate = ?
+    AND childID = ?
+    AND parentID = ?";
+
+    if ($stmt = mysqli_prepare($link, $sql)) {
+      $result = false;
+      mysqli_stmt_bind_param($stmt, "sii", $bookingDate, $childID, $userID);
+      if (mysqli_stmt_execute($stmt)) {
+        mysqli_stmt_store_result($stmt);
+        //Child already booking in
+        if (mysqli_stmt_num_rows($stmt) == 1) {
+          $result = true;
+        }
+      }
+      else {
+        //echo "Execution failed";
+      }
+    }
+    else {
+      //echo "Preparing stmt failed";
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($link);
+    return $result;
   }
 
   function getChildren() {
@@ -94,17 +152,22 @@
           <a class="nav-link" href="booking.php"><b>Make a Booking</b></a>
         </li>
       </ul>
+      <?php
+        if ($_SESSION["isAdmin"]) {
+          echo '<ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="admin.php">Admin</a>
+                  </li>
+                </ul>';
+        }
+      ?>
     </nav>
     <div class="container mainWindow">
       <h1>Booking</h1>
-      <?php
-      //echo "UserID: " . $_SESSION["userID"] . "<br>";
-      //print_r(getChildren());
-      ?>
-      <form action="">
+      <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
         <div class="form-group">
           <label for="kidSelect">Select a child</label>
-          <select class="form-control" name="kidSelect">
+          <select class="form-control" name="childID">
             <?php createSelect() ?>
           </select>
         </div>
@@ -112,6 +175,12 @@
           <label for="bookingDate">Pick a date</label>
           <input type="date" class="form-control" name="bookingDate">
         </div>
-        <button type="button" class="btn btn-success">Book</button>
+        <input type="submit" class="btn btn-success" value="Book">
       </form>
+      <?php
+
+      ?>
+      <script>
+
+      </script>
     </div>

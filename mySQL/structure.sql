@@ -8,7 +8,8 @@ create table if not exists User (
     email varchar(50) not null unique,
     password varchar(200) not null,
     account_created datetime default current_timestamp,
-    isSetup bool default false
+    isSetup bool default false,
+    isAdmin bool default false
 ) engine = InnoDB;
 
 create table if not exists Parent (

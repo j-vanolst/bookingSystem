@@ -28,7 +28,7 @@
 
     //Validate credentials
     if (empty($email_err) && empty($password_err)) {
-      $sql = "select userID, email, password, isSetup from user where email = ?";
+      $sql = "select userID, email, password, isSetup, isAdmin from user where email = ?";
 
       if ($stmt = mysqli_prepare($link, $sql)) {
         mysqli_stmt_bind_param($stmt, "s", $param_email);
@@ -39,7 +39,7 @@
           mysqli_stmt_store_result($stmt);
 
           if (mysqli_stmt_num_rows($stmt) == 1) {
-            mysqli_stmt_bind_result($stmt, $id, $email, $hashed_password, $isSetup);
+            mysqli_stmt_bind_result($stmt, $id, $email, $hashed_password, $isSetup, $isAdmin);
 
             if (mysqli_stmt_fetch($stmt)) {
               if (password_verify($password, $hashed_password)) {
@@ -50,6 +50,8 @@
                 $_SESSION["userID"] = $id;
                 $_SESSION["email"] = $email;
                 $_SESSION["isSetup"] = $isSetup;
+                $_SESSION["isAdmin"] = $isAdmin;
+                
                 if (!$isSetup) {
                   header("location: profile.php");
                 }

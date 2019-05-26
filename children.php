@@ -122,6 +122,15 @@
           <a class="nav-link" href="booking.php"><b>Make a Booking</b></a>
         </li>
       </ul>
+      <?php
+        if ($_SESSION["isAdmin"]) {
+          echo '<ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="admin.php">Admin</a>
+                  </li>
+                </ul>';
+        }
+      ?>
     </nav>
     <div class="container mainWindow">
       <div id="children">
